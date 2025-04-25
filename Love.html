@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Love, Phearin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff8fa3;
+            --dark-color: #590d22;
+            --light-color: #fff0f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 5px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .language-selector select {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            padding: 5px;
+            outline: none;
+        }
+        .open-btn {
+            position: fixed;
+            z-index: 5;
+            padding: 18px 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .open-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .open-btn:active {
+            transform: translateY(0);
+        }
+
+        .heart-emoji {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 77, 109, 0.6);
+            animation: floatDown 8s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatDown {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5rem;
+            color: var(--dark-color);
+            animation: fadeIn 2s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-top: 1rem;
+            animation: fadeIn 2s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .video-section {
+            margin: 4rem 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .video-upload:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .video-upload i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .video-upload p {
+            color: white;
+            text-align: center;
+        }
+
+        #video-preview {
+            width: 100%;
+            display: none;
+            border-radius: 15px;
+        }
+
+        .image-upload-section {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            text-align: center;
+            color: var(--dark-color);
+            margin-bottom: 2rem;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .image-upload-box {
+            position: relative;
+            aspect-ratio: 1/1;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px dashed rgba(89, 13, 34, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .image-upload-box i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .image-upload-box p {
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .image-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .love-letter {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .love-letter:hover {
+            transform: translateY(-5px);
+        }
+
+        .letter-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .letter-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--dark-color);
+            text-align: center;
+        }
+
+        .letter-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            text-align: right;
+            margin-top: 2rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .love-letter {
+                padding: 2rem 1.5rem;
+            }
+
+            .letter-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="km">ភាសាខ្មែរ (Khmer)</option>
+            <option value="zh">中文 (Chinese)</option>
+        </select>
+    </div>
+</style>
+</head>
+<body>
+    <button class="open-btn" onclick="window.open('https://theknot.com/monandkhean', '_blank')">
+        ចុចទីនេះដើម្បីមើលបន្ថែមនៅអនុស្សាវរីណ៌កម្រងរូបភាពរបស់យើង
+    </button>
+    
+    <script>
+        function openCustomWebsite() {
+            const url = prompt("Enter website URL:", "https://theknot.com/monandkhean");
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+    </script>
+
+    <!-- Heart Emoji Background -->
+    <div class="heart-background" id="heart-bg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 id="main-title">My Dearest Phearin</h1>
+            <p class="subtitle" id="main-subtitle">Every moment with you is special</p>
+        </header>
+
+        <!-- Video Upload Section -->
+        <section class="video-section">
+            <h2 class="section-title" id="video-title">Our Lively Moments</h2>
+            <p id="video-description">Upload a video that captures our love</p>
+
+            <div class="video-container">
+                <!-- Your embedded video -->
+                <video id="main-video" controls>
+                    <source src="0425 (1)(3).mp4" type="video/mp4">
+                </video>
+                <video id="video-preview" controls></video>
+                <div class="video-upload" id="video-upload-area">
+                    <i class="fas fa-video"></i>
+                    <p id="video-upload-text">Click to upload a video of us</p>
+                    <p><small id="video-format-text">MP4, WebM or MOV (Max 50MB)</small></p>
+                    <input type="file" id="video-input" accept="video/*" style="display: none;">
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Image Upload Section -->
+        <section class="image-upload-section">
+            <h2 class="section-title" id="gallery-title">Our Precious Memories</h2>
+            <div class="image-grid">
+                <div class="image-upload-box" id="image-upload-1">
+                    <i class="fas fa-image"></i>
+                    <p id="image-upload-text">Click to upload photo</p>
+                    <input type="file" accept="image/*" style="display: none;">
+                    <img class="image-preview" id="image-preview-1">
+                    <img src="61fbe181-4e94-4459-ae0a-0d5e44c78b31.png" alt="Profile Photo" class="profile-img">
+                </div>
+                <div class="image-upload-box" id="image-upload-2">
+                    <i class="fas fa-image"></i>
+                    <p>Click to upload photo</p>
+                    <input type="file" accept="image/*" style="display: none;">
+                    <img class="image-preview" id="image-preview-2">
+                    <img src="image_2025-04-25_17-19-01.png" alt="Profile Photo" class="profile-img">
+                </div>
+                <div class="image-upload-box" id="image-upload-3">
+                    <i class="fas fa-image"></i>
+                    <p>Click to upload photo</p>
+                    <input type="file" accept="image/*" style="display: none;">
+                    <img class="image-preview" id="image-preview-3">
+                    <img src="986b4207-4f8c-437f-aa08-3a4d39f14ba8.png" alt="Profile Photo" class="profile-img">
+                </div>
+                <div class="image-upload-box" id="image-upload-4">
+                    <i class="fas fa-image"></i>
+                    <p>Click to upload photo</p>
+                    <input type="file" accept="image/*" style="display: none;">
+                    <img class="image-preview" id="image-preview-4">
+                    <img src="f32168b6-a247-4509-807c-925f8678e6b5.png" alt="Profile Photo" class="profile-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- Love Letters Section -->
+        <div class="love-letter">
+            <h2 class="letter-title" id="letter1-title">A Thousand Years</h2>
+            <div class="letter-content">
+                <p id="letter1-greeting">My Beloved Phearin,</p>
+                <p id="letter1-content">If I could love you for a thousand years, it still wouldn't be enough. Every moment with you feels like a beautiful dream that I never want to wake up from.</p>
+                <div class="signature" id="letter1-signature">Forever Yours</div>
+            </div>
+        </div>
+        
+        <div class="love-letter">
+            <h2 class="letter-title" id="letter2-title">Three Days</h2>
+            <div class="letter-content">
+                <p id="letter2-greeting">My Sweet Phearin,</p>
+                <p id="letter2-intro">I only need three days to love you completely:</p>
+                <p><strong id="yesterday-label">Yesterday</strong> - <span id="yesterday-text">When I first fell in love with you</span></p>
+                <p><strong id="today-label">Today</strong> - <span id="today-text">As I continue to fall deeper in love with you</span></p>
+                <p><strong id="tomorrow-label">Tomorrow</strong> - <span id="tomorrow-text">For all the love we have yet to share</span></p>
+                <div class="signature" id="letter2-signature">Always</div>
+            </div>
+        </div>
+        
+        <div class="love-letter">
+            <h2 class="letter-title" id="letter3-title">One Day Is Forever</h2>
+            <div class="letter-content">
+                <p id="letter3-greeting">My Darling Phearin,</p>
+                <p id="letter3-content">One day with you is enough to last forever. The way you love me makes each moment feel eternal, and I wouldn't trade a single second of our time together for anything in this world.</p>
+                <div class="signature" id="letter3-signature">Yours Completely</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                mainTitle: "My Dearest Phearin",
+                mainSubtitle: "Every moment with you is special",
+                videoTitle: "Our Lively Moments",
+                videoDescription: "Upload a video that captures our love",
+                videoUploadText: "Click to upload a video of us",
+                videoFormatText: "MP4, WebM or MOV (Max 50MB)",
+                galleryTitle: "Our Precious Memories",
+                imageUploadText: "Click to upload photo",
+                letter1Title: "A Thousand Years",
+                letter1Greeting: "My Beloved Phearin,",
+                letter1Content: "If I could love you for a thousand years, it still wouldn't be enough. Every moment with you feels like a beautiful dream that I never want to wake up from.",
+                letter1Signature: "Forever Yours",
+                letter2Title: "Three Days",
+                letter2Greeting: "My Sweet Phearin,",
+                letter2Intro: "I only need three days to love you completely:",
+                yesterdayLabel: "Yesterday",
+                yesterdayText: "When I first fell in love with you",
+                todayLabel: "Today",
+                todayText: "As I continue to fall deeper in love with you",
+                tomorrowLabel: "Tomorrow",
+                tomorrowText: "For all the love we have yet to share",
+                letter2Signature: "Always",
+                letter3Title: "One Day Is Forever",
+                letter3Greeting: "My Darling Phearin,",
+                letter3Content: "One day with you is enough to last forever. The way you love me makes each moment feel eternal, and I wouldn't trade a single second of our time together for anything in this world.",
+                letter3Signature: "Yours Completely"
+            },
+            km: {
+                mainTitle: "មនុស្សជាទីស្រលាញ់របស់បង Phearin",
+                mainSubtitle: "គ្រប់ពេលវេលាដែលបងបាននៅជាមួយអូនពិតជាពិសេសណាស់",
+                videoTitle: "ពេលវេលាដ៏សប្បាយរីករាយរបស់យើង",
+                videoDescription: "ផ្ទុកឡើងវីដេអូដែលថតយកស្នេហារបស់យើង",
+                videoUploadText: "ចុចដើម្បីផ្ទុកឡើងវីដេអូរបស់យើង",
+                videoFormatText: "MP4, WebM ឬ MOV (អតិបរមា 50MB)",
+                galleryTitle: "រូបថាពិសេសរបស់យើង",
+                imageUploadText: "ចុចដើម្បីផ្ទុកឡើងរូបថត",
+                letter1Title: "ស្រលាញ់អូនមួយពាន់ឆ្នាំ",
+                letter1Greeting: "មនុស្សជាទីស្រលាញ់របស់បង Phearin,",
+                letter1Content: "បើខ្ញុំអាចស្រលាញ់នាងបានមួយពាន់ឆ្នាំ វានៅតែមិនគ្រប់គ្រាន់ទេ។ គ្រប់ពេលវេលាជាមួយនាងហាក់ដូចជាក្តីសុបិន្តដ៏ស្រស់ស្អាតដែលខ្ញុំមិនចង់ភ្ញាក់ពីគេង។",
+                letter1Signature: "ជារៀងរហូត",
+                letter2Title: "បងអាចស្រលាញ់អូនបីថ្ងៃ",
+                letter2Greeting: "Phearin ជាទីស្រលាញ់របស់បង",
+                letter2Intro: "ខ្ញុំត្រូវការតែបីថ្ងៃដើម្បីស្រលាញ់នាងអោយពេញលេញ៖",
+                yesterdayLabel: "ម្សិលមិញ",
+                yesterdayText: "ពេលដែលខ្ញុំបានស្រលាញ់នាងដំបូង",
+                todayLabel: "ថ្ងៃនេះ",
+                todayText: "ខណៈខ្ញុំកំពុងស្រលាញ់នាងកាន់តែជ្រៅ",
+                tomorrowLabel: "ថ្ងៃស្អែក",
+                tomorrowText: "សម្រាប់ស្នេហាទាំងអស់ដែលយើងនៅមិនទាន់បានចែករំលែក",
+                letter2Signature: "ជានិច្ច",
+                letter3Title: "ទេប្រហែលជាស្រលាញ់អូនមួយថ្ងៃនោះគឺស្រលាញ់អូនអស់កល្បជានិច្ច",
+                letter3Greeting: "Phearin ជាទីស្រលាញ់របស់បង",
+                letter3Content: "មួយថ្ងៃជាមួយនាងគឺគ្រប់គ្រាន់ដើម្បីនៅអស់កល្ប។ ក្តីស្រលាញ់របស់អូនដែលមានអោយបងធ្វើអោយគ្រប់ពេលវេលាមានអារម្មណ៍ថាអស់កល្ប ហើយខ្ញុំនឹងមិនដូរពេលវេលាណាមួយរបស់យើងជាមួយអ្វីក្នុងពិភពលោកនេះទេ។",
+                letter3Signature: "ក្តីស្រលាញ់ដ៏ពេញលេញ"
+            },
+            zh: {
+                mainTitle: "我最亲爱的 Phearin",
+                mainSubtitle: "与你在一起的每一刻都很特别",
+                videoTitle: "我们的欢乐时光",
+                videoDescription: "上传一段记录我们爱的视频",
+                videoUploadText: "点击上传我们的视频",
+                videoFormatText: "MP4、WebM 或 MOV (最大50MB)",
+                galleryTitle: "我们的珍贵回忆",
+                imageUploadText: "点击上传照片",
+                letter1Title: "一千年",
+                letter1Greeting: "我亲爱的 Phearin,",
+                letter1Content: "即使我能爱你一千年，也依然不够。与你在一起的每一刻都像一个美丽的梦，让我不愿醒来。",
+                letter1Signature: "永远属于你",
+                letter2Title: "三天",
+                letter2Greeting: "我甜蜜的 Phearin,",
+                letter2Intro: "我只需要三天就能完全爱你：",
+                yesterdayLabel: "昨天",
+                yesterdayText: "当我第一次爱上你",
+                todayLabel: "今天",
+                todayText: "当我继续更深地爱你",
+                tomorrowLabel: "明天",
+                tomorrowText: "为了我们尚未分享的所有爱",
+                letter2Signature: "永远",
+                letter3Title: "一天即是永恒",
+                letter3Greeting: "亲爱的 Phearin,",
+                letter3Content: "与你共度的一天足以成为永恒。你对我的爱让每一刻都感觉永恒，我不会用我们在一起的任何一秒钟来交换世上的任何东西。",
+                letter3Signature: "完全属于你"
+            }
+        };
+
+        // Function to change language
+        function changeLanguage(lang) {
+            // Update all text elements
+            document.getElementById('main-title').textContent = translations[lang].mainTitle;
+            document.getElementById('main-subtitle').textContent = translations[lang].mainSubtitle;
+            document.getElementById('video-title').textContent = translations[lang].videoTitle;
+            document.getElementById('video-description').textContent = translations[lang].videoDescription;
+            document.getElementById('video-upload-text').textContent = translations[lang].videoUploadText;
+            document.getElementById('video-format-text').textContent = translations[lang].videoFormatText;
+            document.getElementById('gallery-title').textContent = translations[lang].galleryTitle;
+            document.getElementById('image-upload-text').textContent = translations[lang].imageUploadText;
+            
+            // Letter 1
+            document.getElementById('letter1-title').textContent = translations[lang].letter1Title;
+            document.getElementById('letter1-greeting').textContent = translations[lang].letter1Greeting;
+            document.getElementById('letter1-content').textContent = translations[lang].letter1Content;
+            document.getElementById('letter1-signature').textContent = translations[lang].letter1Signature;
+            
+            // Letter 2
+            document.getElementById('letter2-title').textContent = translations[lang].letter2Title;
+            document.getElementById('letter2-greeting').textContent = translations[lang].letter2Greeting;
+            document.getElementById('letter2-intro').textContent = translations[lang].letter2Intro;
+            document.getElementById('yesterday-label').textContent = translations[lang].yesterdayLabel;
+            document.getElementById('yesterday-text').textContent = translations[lang].yesterdayText;
+            document.getElementById('today-label').textContent = translations[lang].todayLabel;
+            document.getElementById('today-text').textContent = translations[lang].todayText;
+            document.getElementById('tomorrow-label').textContent = translations[lang].tomorrowLabel;
+            document.getElementById('tomorrow-text').textContent = translations[lang].tomorrowText;
+            document.getElementById('letter2-signature').textContent = translations[lang].letter2Signature;
+            
+            // Letter 3
+            document.getElementById('letter3-title').textContent = translations[lang].letter3Title;
+            document.getElementById('letter3-greeting').textContent = translations[lang].letter3Greeting;
+            document.getElementById('letter3-content').textContent = translations[lang].letter3Content;
+            document.getElementById('letter3-signature').textContent = translations[lang].letter3Signature;
+            
+            // Save language preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // Initialize language
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved language preference
+            const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+            document.getElementById('language-select').value = savedLang;
+            changeLanguage(savedLang);
+            
+            // Set up language selector change event
+            document.getElementById('language-select').addEventListener('change', function() {
+                changeLanguage(this.value);
+            });
+            
+            createHearts();
+        });
+
+        function createHearts() {
+            const heartBg = document.getElementById('heart-bg');
+            const heartCount = 30;
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-emoji';
+                heart.innerHTML = '❤️';
+
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+
+                heartBg.appendChild(heart);
+            }
+        }
+
+        document.querySelectorAll('.image-upload-box').forEach((box, index) => {
+            const input = box.querySelector('input');
+            const preview = box.querySelector('.image-preview');
+
+            box.addEventListener('click', () => {
+                input.click();
+            });
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        preview.style.display = 'block';
+                        box.querySelector('i').style.display = 'none';
+                        box.querySelector('p').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Video upload functionality
+        const videoUploadArea = document.getElementById('video-upload-area');
+        const videoInput = document.getElementById('video-input');
+        const videoPreview = document.getElementById('video-preview');
+
+        videoUploadArea.addEventListener('click', () => {
+            videoInput.click();
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 50 * 1024 * 1024) {
+                    alert(document.getElementById('video-format-text').textContent);
+                    return;
+                }
+                
+                const videoURL = URL.createObjectURL(file);
+                videoPreview.src = videoURL;
+                videoPreview.style.display = 'block';
+                videoUploadArea.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
